@@ -1,19 +1,31 @@
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { LinearProgress, Box } from '@mui/material';
+import { useAppSelector } from './store';
 
 const MovieList = lazy(() => import('./pages/MovieList'));
 const Movie = lazy(() => import('./pages/Movie'));
 
 function App() {
-	// TODO: put a loading spinner
+	const loading = useAppSelector((state) => state.common.loading);
 
 	return (
-		<Routes>
-			<Route path='/'>
-				<Route index element={<MovieList />} />
-				<Route path=':movieId' element={<Movie />} />
-			</Route>
-		</Routes>
+		<>
+			{loading && <LinearProgress color='primary' />}
+
+			<Suspense
+				fallback={
+					<Box p={4}>
+						<LinearProgress />
+					</Box>
+				}
+			>
+				<Routes>
+					<Route path='/' element={<MovieList />} />
+					<Route path=':movieId' element={<Movie />} />
+				</Routes>
+			</Suspense>
+		</>
 	);
 }
 

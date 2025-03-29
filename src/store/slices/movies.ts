@@ -1,36 +1,49 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Movie } from '../../types/movie';
 import { fetchMovies } from '../../api';
+import { Movie } from '../../types/movie';
+import { setLoading, setError } from './common';
 
 interface MovieState {
 	movies: Movie[];
 	totalResults: number;
-	loading: boolean;
-	error: string | null;
 }
 
 const initialState: MovieState = {
 	movies: [],
 	totalResults: 0,
-	loading: false,
-	error: null,
 };
-
+// TODO: reject errors with 	thunkAPI.rejectWithValue(message);
 export const fetchMovieList = createAsyncThunk(
-	'movies/fetchMovies',
-	async ({
-		query,
-		page,
-		type,
-		year,
-	}: {
-		query: string;
-		page: number;
-		type: string;
-		year: string;
-	}) => {
-		const { movies, totalResults } = await fetchMovies(query, page, type, year);
-		return { movies, totalResults };
+	'movies/fetchMovieList',
+	async (
+		{
+			query,
+			page,
+			type,
+			year,
+		}: {
+			query: string;
+			page: number;
+			type: string;
+			year: string;
+		},
+		{ dispatch }
+	) => {
+		try {
+			dispatch(setLoading(true));
+			dispatch(setError(null));
+			const { movies, totalResults } = await fetchMovies(query, page, type, year);
+			return { movies, totalResults };
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				dispatch(setError(err.message || 'Something went wrong.'));
+			} else {
+				dispatch(setError('An unknown error occurred.'));
+			}
+			throw err;
+		} finally {
+			dispatch(setLoading(false));
+		}
 	}
 );
 
@@ -39,22 +52,11 @@ const movieSlice = createSlice({
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder
-			.addCase(fetchMovieList.pending, (state) => {
-				state.loading = true;
-				state.error = null;
-			})
-			.addCase(fetchMovieList.fulfilled, (state, action) => {
-				state.loading = false;
-				state.movies = action.payload.movies || [];
-				state.totalResults = action.payload.totalResults || 0;
-			})
-			.addCase(fetchMovieList.rejected, (state, action) => {
-				state.loading = false;
-				state.error = action.error.message || 'Error fetching movies.';
-			});
+		builder.addCase(fetchMovieList.fulfilled, (state, action) => {
+			state.movies = action.payload.movies;
+			state.totalResults = action.payload.totalResults;
+		});
 	},
 });
-const { reducer } = movieSlice;
 
-export default reducer;
+export default movieSlice.reducer;

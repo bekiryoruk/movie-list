@@ -3,9 +3,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 
 import moviesReducer from './slices/movies';
+import commonReducer from './slices/common';
 
 const rootReducer = combineReducers({
 	movies: moviesReducer,
+	common: commonReducer,
 });
 
 export const store = configureStore({

@@ -11,18 +11,20 @@ import {
 	TextField,
 	Select,
 	MenuItem,
-	Button,
 	Typography,
 	Pagination,
 	Stack,
+	Alert,
 } from '@mui/material';
 import { Movie } from '../types/movie';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchMovieList } from '../store/slices';
+import useDebounce from '../hooks/useDebounce';
 
 const MovieList = () => {
 	const dispatch = useAppDispatch();
-	const { movies, loading, error, totalResults } = useAppSelector((state) => state.movies);
+	const { movies, totalResults } = useAppSelector((state) => state.movies);
+	const { loading, error } = useAppSelector((state) => state.common);
 
 	const [query, setQuery] = useState('Pokemon');
 	const [page, setPage] = useState(1);
@@ -30,18 +32,28 @@ const MovieList = () => {
 	const [year, setYear] = useState('');
 	const totalPages = Math.ceil(totalResults / 10);
 
-	useEffect(() => {
-		dispatch(fetchMovieList({ query, page, type, year }));
-	}, [dispatch, query, page, type, year]);
+	// TODO: find a better way to add debounce
+	const debouncedQuery = useDebounce(query, 500);
+	const debouncedType = useDebounce(type, 500);
+	const debouncedYear = useDebounce(year, 500);
 
-	const handleSearch = () => {
+	useEffect(() => {
 		setPage(1);
-		dispatch(fetchMovieList({ query, page: 1, type, year }));
-	};
+	}, [debouncedQuery, debouncedType, debouncedYear]);
+
+	useEffect(() => {
+		dispatch(
+			fetchMovieList({
+				query: debouncedQuery,
+				page,
+				type: debouncedType,
+				year: debouncedYear,
+			})
+		);
+	}, [dispatch, debouncedQuery, page, debouncedType, debouncedYear]);
 
 	const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
 		setPage(value);
-		dispatch(fetchMovieList({ query, page: value, type, year }));
 	};
 
 	return (
@@ -74,49 +86,56 @@ const MovieList = () => {
 					<MenuItem value='series'>TV Series</MenuItem>
 					<MenuItem value='episode'>Episode</MenuItem>
 				</Select>
-				<Button variant='contained' onClick={handleSearch}>
-					Search
-				</Button>
 			</Stack>
 
-			{loading && <Typography>Loading...</Typography>}
-			{error && <Typography color='error'>{error}</Typography>}
-
-			{!loading && movies.length > 0 ? (
-				<TableContainer component={Paper}>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell>
-									<strong>Title</strong>
-								</TableCell>
-								<TableCell>
-									<strong>Release Date</strong>
-								</TableCell>
-								<TableCell>
-									<strong>IMDb ID</strong>
-								</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{movies.map((movie: Movie) => (
-								<TableRow key={movie.imdbID}>
-									<TableCell>{movie.Title}</TableCell>
-									<TableCell>{movie.Year}</TableCell>
-									<TableCell>{movie.imdbID}</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			) : (
-				!loading && <Typography mt={3}>No results found.</Typography>
+			{error && (
+				<Alert severity='error' sx={{ mb: 3 }}>
+					{error}
+				</Alert>
 			)}
 
-			{totalPages > 1 && (
-				<Box mt={4} display='flex' justifyContent='center'>
-					<Pagination count={totalPages} page={page} onChange={handlePageChange} color='primary' />
-				</Box>
+			{!loading && movies.length > 0 ? (
+				<>
+					<TableContainer component={Paper}>
+						<Table>
+							<TableHead>
+								<TableRow>
+									<TableCell>
+										<strong>Title</strong>
+									</TableCell>
+									<TableCell>
+										<strong>Release Date</strong>
+									</TableCell>
+									<TableCell>
+										<strong>IMDb ID</strong>
+									</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{movies.map((movie: Movie) => (
+									<TableRow key={movie.imdbID}>
+										<TableCell>{movie.Title}</TableCell>
+										<TableCell>{movie.Year}</TableCell>
+										<TableCell>{movie.imdbID}</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</TableContainer>
+
+					{totalPages > 1 && (
+						<Box mt={4} display='flex' justifyContent='center'>
+							<Pagination
+								count={totalPages}
+								page={page}
+								onChange={handlePageChange}
+								color='primary'
+							/>
+						</Box>
+					)}
+				</>
+			) : (
+				!loading && <Typography mt={3}>No results found.</Typography>
 			)}
 		</Box>
 	);
