@@ -1,4 +1,4 @@
-import { Movie, MovieApiResponse } from '../types/movie';
+import { Movie, MovieApiResponse, MovieDetails } from '../types/movie';
 import { api } from './api';
 
 export const fetchMovies = async (
@@ -28,5 +28,25 @@ export const fetchMovies = async (
 	} catch (error) {
 		console.error('Error fetching movies:', error);
 		return { movies: [], totalResults: 0 };
+	}
+};
+
+export const fetchMovieDetails = async (id: string): Promise<MovieDetails | null> => {
+	try {
+		const response = await api.get('', {
+			params: {
+				i: id,
+				plot: 'full',
+			},
+		});
+
+		if (response.data.Response === 'True') {
+			return response.data;
+		} else {
+			throw new Error(response.data.Error || 'Error fetching movie details.');
+		}
+	} catch (error) {
+		console.error('Error fetching movie details:', error);
+		return null;
 	}
 };

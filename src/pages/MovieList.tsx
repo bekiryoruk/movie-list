@@ -20,6 +20,7 @@ import { Movie } from '../types/movie';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchMovieList } from '../store/slices';
 import useDebounce from '../hooks/useDebounce';
+import { Link } from 'react-router-dom';
 
 const MovieList = () => {
 	const dispatch = useAppDispatch();
@@ -114,7 +115,14 @@ const MovieList = () => {
 							<TableBody>
 								{movies.map((movie: Movie) => (
 									<TableRow key={movie.imdbID}>
-										<TableCell>{movie.Title}</TableCell>
+										<TableCell>
+											<Link
+												to={`/${movie.imdbID}`}
+												style={{ textDecoration: 'none', color: 'inherit' }}
+											>
+												{movie.Title}
+											</Link>
+										</TableCell>
 										<TableCell>{movie.Year}</TableCell>
 										<TableCell>{movie.imdbID}</TableCell>
 									</TableRow>
