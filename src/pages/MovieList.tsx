@@ -1,18 +1,33 @@
-import { useEffect, useState } from 'react';
-import { RootState, useAppDispatch, useAppSelector } from '../store';
-import { fetchMovieList } from '../store/slices';
+import React, { useEffect, useState } from 'react';
+import {
+	Box,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Paper,
+	TextField,
+	Select,
+	MenuItem,
+	Button,
+	Typography,
+	Pagination,
+	Stack,
+} from '@mui/material';
 import { Movie } from '../types/movie';
+import { useAppDispatch, useAppSelector } from '../store';
+import { fetchMovieList } from '../store/slices';
 
 const MovieList = () => {
 	const dispatch = useAppDispatch();
-	const { movies, loading, error, totalResults } = useAppSelector(
-		(state: RootState) => state.movies
-	);
+	const { movies, loading, error, totalResults } = useAppSelector((state) => state.movies);
 
-	const [query, setQuery] = useState<string>('Pokemon');
-	const [page, setPage] = useState<number>(1);
-	const [type, setType] = useState<string>('');
-	const [year, setYear] = useState<string>('');
+	const [query, setQuery] = useState('Pokemon');
+	const [page, setPage] = useState(1);
+	const [type, setType] = useState('');
+	const [year, setYear] = useState('');
 	const totalPages = Math.ceil(totalResults / 10);
 
 	useEffect(() => {
@@ -24,90 +39,86 @@ const MovieList = () => {
 		dispatch(fetchMovieList({ query, page: 1, type, year }));
 	};
 
-	const handlePageChange = (newPage: number) => {
-		setPage(newPage);
-		dispatch(fetchMovieList({ query, page: newPage, type, year }));
+	const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
+		setPage(value);
+		dispatch(fetchMovieList({ query, page: value, type, year }));
 	};
 
 	return (
-		<div className='container'>
-			<h1>🎥 Movie Explorer</h1>
+		<Box p={4}>
+			<Typography variant='h4' gutterBottom>
+				🎬 Movie Explorer
+			</Typography>
 
-			<div className='search-bar'>
-				<input
-					type='text'
+			<Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={3}>
+				<TextField
+					label='Search'
+					variant='outlined'
 					value={query}
 					onChange={(e) => setQuery(e.target.value)}
-					placeholder='Search movies...'
 				/>
-				<button onClick={handleSearch}>Search</button>
-			</div>
-
-			<div className='filters'>
-				<input
-					type='text'
-					placeholder='Year'
+				<TextField
+					label='Year'
+					variant='outlined'
 					value={year}
 					onChange={(e) => setYear(e.target.value)}
 				/>
-				<select value={type} onChange={(e) => setType(e.target.value)}>
-					<option value=''>All</option>
-					<option value='movie'>Movies</option>
-					<option value='series'>TV Series</option>
-					<option value='episode'>Episodes</option>
-				</select>
-			</div>
+				<Select
+					value={type}
+					onChange={(e) => setType(e.target.value)}
+					displayEmpty
+					variant='outlined'
+				>
+					<MenuItem value=''>All</MenuItem>
+					<MenuItem value='movie'>Movie</MenuItem>
+					<MenuItem value='series'>TV Series</MenuItem>
+					<MenuItem value='episode'>Episode</MenuItem>
+				</Select>
+				<Button variant='contained' onClick={handleSearch}>
+					Search
+				</Button>
+			</Stack>
 
-			{loading && <p>Loading...</p>}
-			{error && <p>Error: {error}</p>}
+			{loading && <Typography>Loading...</Typography>}
+			{error && <Typography color='error'>{error}</Typography>}
 
 			{!loading && movies.length > 0 ? (
-				<table className='movie-table'>
-					<thead>
-						<tr>
-							<th>Poster</th>
-							<th>Name</th>
-							<th>Release Date</th>
-							<th>Type</th>
-							<th>IMDb ID</th>
-						</tr>
-					</thead>
-					<tbody>
-						{movies.map((movie: Movie) => (
-							<tr key={movie.imdbID}>
-								<td>
-									<img
-										src={movie.Poster !== 'N/A' ? movie.Poster : '/no-image.png'}
-										alt={movie.Title}
-										width='50'
-									/>
-								</td>
-								<td>{movie.Title}</td>
-								<td>{movie.Year}</td>
-								<td>{movie.Type.charAt(0).toUpperCase() + movie.Type.slice(1)}</td>
-								<td>{movie.imdbID}</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
+				<TableContainer component={Paper}>
+					<Table>
+						<TableHead>
+							<TableRow>
+								<TableCell>
+									<strong>Title</strong>
+								</TableCell>
+								<TableCell>
+									<strong>Release Date</strong>
+								</TableCell>
+								<TableCell>
+									<strong>IMDb ID</strong>
+								</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{movies.map((movie: Movie) => (
+								<TableRow key={movie.imdbID}>
+									<TableCell>{movie.Title}</TableCell>
+									<TableCell>{movie.Year}</TableCell>
+									<TableCell>{movie.imdbID}</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</TableContainer>
 			) : (
-				!loading && <p>No movies found.</p>
+				!loading && <Typography mt={3}>No results found.</Typography>
 			)}
 
 			{totalPages > 1 && (
-				<div className='pagination'>
-					<button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
-						Previous
-					</button>
-					<span>
-						Page {page} of {totalPages}
-					</span>
-					<button onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>
-						Next
-					</button>
-				</div>
+				<Box mt={4} display='flex' justifyContent='center'>
+					<Pagination count={totalPages} page={page} onChange={handlePageChange} color='primary' />
+				</Box>
 			)}
-		</div>
+		</Box>
 	);
 };
 
