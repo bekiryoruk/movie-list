@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Container } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchMovieList } from '../store/slices';
 import useDebounce from '../hooks/useDebounce';
@@ -39,26 +39,41 @@ const MovieList = () => {
 	};
 
 	return (
-		<Box p={4}>
-			<Typography variant='h4' gutterBottom textAlign='center'>
-				Movie Explorer
-			</Typography>
+		<Box
+			sx={{
+				minHeight: '100vh',
+				backgroundColor: '#F5F5F5',
+				pt: 5,
+				pb: 5,
+				boxSizing: 'border-box',
+			}}
+		>
+			<Container maxWidth='lg'>
+				<Typography
+					variant='h3'
+					gutterBottom
+					textAlign='center'
+					sx={{ fontWeight: 'bold', mb: 3, color: 'black' }}
+				>
+					Movie Explorer
+				</Typography>
 
-			<MovieSearchInputs
-				query={query}
-				setQuery={setQuery}
-				year={year}
-				setYear={setYear}
-				type={type}
-				setType={setType}
-			/>
+				<MovieSearchInputs
+					query={query}
+					setQuery={setQuery}
+					year={year}
+					setYear={setYear}
+					type={type}
+					setType={setType}
+				/>
 
-			<MovieTable
-				movies={movies}
-				totalPages={totalPages}
-				page={page}
-				handlePageChange={handlePageChange}
-			/>
+				<MovieTable
+					movies={movies}
+					totalPages={totalPages}
+					page={page}
+					handlePageChange={handlePageChange}
+				/>
+			</Container>
 		</Box>
 	);
 };

@@ -18,20 +18,38 @@ const MovieSearchInputs: React.FC<MovieSearchInputsProps> = ({
 	type,
 	setType,
 }) => {
+	const currentYear = new Date().getFullYear();
+	const years = Array.from(new Array(currentYear - 1899), (_, index) => 1900 + index);
+
 	return (
-		<Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={3}>
+		<Stack direction={{ xs: 'column', sm: 'row' }} justifyContent='center' spacing={2} mb={3}>
 			<TextField
 				label='Search'
 				variant='outlined'
 				value={query}
 				onChange={(e) => setQuery(e.target.value)}
 			/>
-			<TextField
-				label='Year'
-				variant='outlined'
+			<Select
 				value={year}
 				onChange={(e) => setYear(e.target.value)}
-			/>
+				displayEmpty
+				variant='outlined'
+				MenuProps={{
+					PaperProps: {
+						style: {
+							maxHeight: 224,
+							overflowY: 'auto',
+						},
+					},
+				}}
+			>
+				<MenuItem value=''>All Years</MenuItem>
+				{years.map((year) => (
+					<MenuItem key={year} value={year.toString()}>
+						{year}
+					</MenuItem>
+				))}
+			</Select>
 			<Select
 				value={type}
 				onChange={(e) => setType(e.target.value)}
