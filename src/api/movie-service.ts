@@ -23,7 +23,7 @@ export const fetchMovies = async (
 				totalResults: parseInt(response.data.totalResults, 10),
 			};
 		} else {
-			throw new Error(response.data.Error || 'Error fetching movies.');
+			throw new Error(response.data.Error ?? 'Error fetching movies.');
 		}
 	} catch (error) {
 		console.error('Error fetching movies:', error);
