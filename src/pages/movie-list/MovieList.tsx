@@ -27,15 +27,17 @@ const MovieList = () => {
 	const debouncedYear = useDebounce(year, 500);
 
 	useEffect(() => {
-		dispatch(
-			fetchMovieList({
-				query: debouncedQuery,
-				page,
-				type: debouncedType,
-				year: debouncedYear,
-			})
-		);
-	}, [dispatch, debouncedQuery, page, debouncedType, debouncedYear]);
+		if (movies.length === 0) {
+			dispatch(
+				fetchMovieList({
+					query: debouncedQuery,
+					page,
+					type: debouncedType,
+					year: debouncedYear,
+				})
+			);
+		}
+	}, [dispatch, debouncedQuery, page, debouncedType, debouncedYear, movies.length]);
 
 	const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
 		dispatch(setPage(value));
