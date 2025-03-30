@@ -59,7 +59,7 @@ const MovieList = () => {
 
 	return (
 		<Box p={4}>
-			<Typography variant='h4' gutterBottom>
+			<Typography variant='h4' gutterBottom textAlign='center'>
 				🎬 Movie Explorer
 			</Typography>
 
