@@ -1,8 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchMovies, fetchMovieDetails } from '../../api';
 import { Movie, MovieDetails } from '../../types/movie';
 import { setError, setLoading } from '.';
 import { handleThunkError } from '../../helpers/handleThunkError';
+import { createAppAsyncThunk } from '../../helpers/createAppAsyncThunk';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface MovieState {
 	movies: Movie[];
@@ -16,20 +17,10 @@ const initialState: MovieState = {
 	movieDetails: null,
 };
 
-export const fetchMovieList = createAsyncThunk(
+export const fetchMovieList = createAppAsyncThunk(
 	'movies/fetchMovieList',
 	async (
-		{
-			query,
-			page,
-			type,
-			year,
-		}: {
-			query: string;
-			page: number;
-			type: string;
-			year: string;
-		},
+		{ query, page, type, year }: { query: string; page: number; type: string; year: string },
 		{ dispatch, rejectWithValue }
 	) => {
 		try {
@@ -38,14 +29,14 @@ export const fetchMovieList = createAsyncThunk(
 			const { movies, totalResults } = await fetchMovies(query, page, type, year);
 			return { movies, totalResults };
 		} catch (err: unknown) {
-			return handleThunkError(err, rejectWithValue);
+			return handleThunkError(err, rejectWithValue, dispatch);
 		} finally {
 			dispatch(setLoading(false));
 		}
 	}
 );
 
-export const fetchMovieDetail = createAsyncThunk(
+export const fetchMovieDetail = createAppAsyncThunk(
 	'movies/fetchMovieDetail',
 	async (id: string, { dispatch, rejectWithValue }) => {
 		try {
@@ -54,7 +45,7 @@ export const fetchMovieDetail = createAsyncThunk(
 			const data = await fetchMovieDetails(id);
 			return data;
 		} catch (err: unknown) {
-			return handleThunkError(err, rejectWithValue);
+			return handleThunkError(err, rejectWithValue, dispatch);
 		} finally {
 			dispatch(setLoading(false));
 		}
@@ -74,6 +65,10 @@ const movieSlice = createSlice({
 			state.movies = action.payload.movies;
 			state.totalResults = action.payload.totalResults;
 		});
+		builder.addCase(fetchMovieList.rejected, (state) => {
+			state.movies = [];
+			state.totalResults = 0;
+		});
 
 		builder.addCase(
 			fetchMovieDetail.fulfilled,
@@ -81,6 +76,9 @@ const movieSlice = createSlice({
 				state.movieDetails = action.payload;
 			}
 		);
+		builder.addCase(fetchMovieDetail.rejected, (state) => {
+			state.movieDetails = null;
+		});
 	},
 });
 
