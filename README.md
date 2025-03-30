@@ -21,6 +21,7 @@ npm run dev
 
 
 The application will be accessible at [http://localhost:5173](http://localhost:5173).
+The application is currently running at [https://movie-list-roan-seven.vercel.app/](https://movie-list-roan-seven.vercel.app/).
 
 ### 3. Build the Application for Production
 ```bash
