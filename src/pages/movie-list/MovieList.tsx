@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Box, Typography, Container } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { fetchMovieList, setSearchQuery } from '../../store/slices/movies';
+import {
+	fetchMovieList,
+	setSearchQuery,
+	setPage,
+	setType,
+	setYear,
+} from '../../store/slices/movies';
 import useDebounce from '../../hooks/use-debounce';
 import MovieSearchInputs from './components/MovieSearchInputs';
 import MovieTable from './components/MovieTable';
@@ -9,21 +15,16 @@ import MovieTableSkeleton from './components/MovieTableSkeleton';
 
 const MovieList = () => {
 	const dispatch = useAppDispatch();
-	const { movies, totalResults, searchQuery } = useAppSelector((state) => state.movies);
+	const { movies, totalResults, searchQuery, page, type, year } = useAppSelector(
+		(state) => state.movies
+	);
 	const loading = useAppSelector((state) => state.common.loading);
 
-	const [page, setPage] = useState(1);
-	const [type, setType] = useState('');
-	const [year, setYear] = useState('');
 	const totalPages = Math.ceil(totalResults / 10);
 
 	const debouncedQuery = useDebounce(searchQuery, 500);
 	const debouncedType = useDebounce(type, 500);
 	const debouncedYear = useDebounce(year, 500);
-
-	useEffect(() => {
-		setPage(1);
-	}, [debouncedQuery, debouncedType, debouncedYear]);
 
 	useEffect(() => {
 		dispatch(
@@ -37,11 +38,19 @@ const MovieList = () => {
 	}, [dispatch, debouncedQuery, page, debouncedType, debouncedYear]);
 
 	const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
-		setPage(value);
+		dispatch(setPage(value));
 	};
 
 	const handleQueryChange = (newQuery: string) => {
 		dispatch(setSearchQuery(newQuery));
+	};
+
+	const handleTypeChange = (newType: string) => {
+		dispatch(setType(newType));
+	};
+
+	const handleYearChange = (newYear: string) => {
+		dispatch(setYear(newYear));
 	};
 
 	return (
@@ -67,9 +76,9 @@ const MovieList = () => {
 					query={searchQuery}
 					setQuery={handleQueryChange}
 					year={year}
-					setYear={setYear}
+					setYear={handleYearChange}
 					type={type}
-					setType={setType}
+					setType={handleTypeChange}
 				/>
 
 				{loading ? (

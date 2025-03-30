@@ -10,6 +10,9 @@ interface MovieState {
 	totalResults: number;
 	movieDetails: MovieDetails | null;
 	searchQuery: string;
+	page: number;
+	type: string;
+	year: string;
 }
 
 const initialState: MovieState = {
@@ -17,6 +20,9 @@ const initialState: MovieState = {
 	totalResults: 0,
 	movieDetails: null,
 	searchQuery: 'Pokemon',
+	page: 1,
+	type: '',
+	year: '',
 };
 
 export const fetchMovieList = createAppAsyncThunk(
@@ -63,6 +69,18 @@ const movieSlice = createSlice({
 		},
 		setSearchQuery(state, action: PayloadAction<string>) {
 			state.searchQuery = action.payload;
+			state.page = 1;
+		},
+		setPage(state, action: PayloadAction<number>) {
+			state.page = action.payload;
+		},
+		setType(state, action: PayloadAction<string>) {
+			state.type = action.payload;
+			state.page = 1;
+		},
+		setYear(state, action: PayloadAction<string>) {
+			state.year = action.payload;
+			state.page = 1;
 		},
 	},
 	extraReducers: (builder) => {
@@ -88,5 +106,5 @@ const movieSlice = createSlice({
 	},
 });
 
-export const { clearMovieDetails, setSearchQuery } = movieSlice.actions;
+export const { clearMovieDetails, setSearchQuery, setPage, setType, setYear } = movieSlice.actions;
 export default movieSlice.reducer;

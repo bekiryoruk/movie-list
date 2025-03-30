@@ -43,10 +43,14 @@ const MovieTable: React.FC<MovieTableProps> = ({ movies, totalPages, page, handl
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{movies.map((movie: Movie) => (
+								{movies.map((movie: Movie, index: number) => (
 									<TableRow
 										key={movie.imdbID}
-										style={{ cursor: 'pointer' }}
+										style={{
+											cursor: 'pointer',
+											backgroundColor: index % 2 === 0 ? '#f5f5f5' : '#e0e0e0',
+											color: '#000',
+										}}
 										onClick={() => navigate(`/${movie.imdbID}`)}
 									>
 										<TableCell>{movie.Title}</TableCell>
