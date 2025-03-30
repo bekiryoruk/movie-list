@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchMovies, fetchMovieDetails } from '../../api';
 import { Movie, MovieDetails } from '../../types/movie';
 import { setError, setLoading } from '.';
+import { handleThunkError } from '../../helpers/handleThunkError';
 
 interface MovieState {
 	movies: Movie[];
@@ -15,7 +16,6 @@ const initialState: MovieState = {
 	movieDetails: null,
 };
 
-// TODO: reject errors with 	thunkAPI.rejectWithValue(message);
 export const fetchMovieList = createAsyncThunk(
 	'movies/fetchMovieList',
 	async (
@@ -30,7 +30,7 @@ export const fetchMovieList = createAsyncThunk(
 			type: string;
 			year: string;
 		},
-		{ dispatch }
+		{ dispatch, rejectWithValue }
 	) => {
 		try {
 			dispatch(setLoading(true));
@@ -38,12 +38,7 @@ export const fetchMovieList = createAsyncThunk(
 			const { movies, totalResults } = await fetchMovies(query, page, type, year);
 			return { movies, totalResults };
 		} catch (err: unknown) {
-			if (err instanceof Error) {
-				dispatch(setError(err.message || 'Something went wrong.'));
-			} else {
-				dispatch(setError('An unknown error occurred.'));
-			}
-			throw err;
+			return handleThunkError(err, rejectWithValue);
 		} finally {
 			dispatch(setLoading(false));
 		}
@@ -52,19 +47,14 @@ export const fetchMovieList = createAsyncThunk(
 
 export const fetchMovieDetail = createAsyncThunk(
 	'movies/fetchMovieDetail',
-	async (id: string, { dispatch }) => {
+	async (id: string, { dispatch, rejectWithValue }) => {
 		try {
 			dispatch(setLoading(true));
 			dispatch(setError(null));
 			const data = await fetchMovieDetails(id);
 			return data;
 		} catch (err: unknown) {
-			if (err instanceof Error) {
-				dispatch(setError(err.message || 'Something went wrong.'));
-			} else {
-				dispatch(setError('An unknown error occurred.'));
-			}
-			throw err;
+			return handleThunkError(err, rejectWithValue);
 		} finally {
 			dispatch(setLoading(false));
 		}
