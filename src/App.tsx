@@ -5,6 +5,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 
 const MovieList = lazy(() => import('./pages/movie-list/MovieList'));
 const Movie = lazy(() => import('./pages/movie/Movie'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
 	return (
@@ -14,6 +15,7 @@ function App() {
 				<Routes>
 					<Route path='/' element={<MovieList />} />
 					<Route path=':movieId' element={<Movie />} />
+					<Route path='*' element={<NotFound />} />
 				</Routes>
 			</Suspense>
 		</>
