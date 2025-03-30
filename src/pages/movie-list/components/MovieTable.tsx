@@ -42,15 +42,13 @@ const MovieTable: React.FC<MovieTableProps> = ({ movies, totalPages, page, handl
 							</TableHead>
 							<TableBody>
 								{movies.map((movie: Movie) => (
-									<TableRow key={movie.imdbID}>
-										<TableCell>
-											<Link
-												to={`/${movie.imdbID}`}
-												style={{ textDecoration: 'none', color: 'inherit' }}
-											>
-												{movie.Title}
-											</Link>
-										</TableCell>
+									<TableRow
+										key={movie.imdbID}
+										component={Link}
+										to={`/${movie.imdbID}`}
+										style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}
+									>
+										<TableCell>{movie.Title}</TableCell>
 										<TableCell>{movie.Year}</TableCell>
 										<TableCell>{movie.imdbID}</TableCell>
 									</TableRow>
