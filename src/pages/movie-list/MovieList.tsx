@@ -57,7 +57,7 @@ const MovieList = () => {
 					textAlign='center'
 					sx={{ fontWeight: 'bold', mb: 3, color: 'black' }}
 				>
-					Movie Explorer
+					ShowSeeker
 				</Typography>
 
 				<MovieSearchInputs
