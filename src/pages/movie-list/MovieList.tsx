@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Container } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../store';
-import { fetchMovieList } from '../store/slices';
-import useDebounce from '../hooks/useDebounce';
-import MovieSearchInputs from '../components/MovieSearchInputs';
-import MovieTable from '../components/MovieTable';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { fetchMovieList } from '../../store/slices';
+import useDebounce from '../../hooks/use-debounce';
+import MovieSearchInputs from './components/MovieSearchInputs';
+import MovieTable from './components/MovieTable';
 
 const MovieList = () => {
 	const dispatch = useAppDispatch();

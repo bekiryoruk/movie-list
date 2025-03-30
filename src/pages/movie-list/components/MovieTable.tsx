@@ -11,7 +11,7 @@ import {
 	Pagination,
 	Typography,
 } from '@mui/material';
-import { Movie } from '../types/movie';
+import { Movie } from '../../../types/movie';
 import { Link } from 'react-router-dom';
 
 interface MovieTableProps {

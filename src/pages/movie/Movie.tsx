@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Typography, Card, CardContent, CardMedia, Button, Chip, Stack } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../store';
-import { clearMovieDetails, fetchMovieDetail } from '../store/slices';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { clearMovieDetails, fetchMovieDetail } from '../../store/slices';
 
 const Movie = () => {
 	const { movieId } = useParams<{ movieId: string }>();

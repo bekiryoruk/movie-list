@@ -1,5 +1,5 @@
-import { Movie, MovieApiResponse, MovieDetails } from '../types/movie';
-import { api } from './api';
+import { Movie, MovieApiResponse, MovieDetails } from '../../types/movie';
+import { api } from '../api';
 
 export const fetchMovies = async (
 	query: string,

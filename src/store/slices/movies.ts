@@ -1,8 +1,8 @@
 import { fetchMovies, fetchMovieDetails } from '../../api';
 import { Movie, MovieDetails } from '../../types/movie';
 import { setError, setLoading } from '.';
-import { handleThunkError } from '../../helpers/handleThunkError';
-import { createAppAsyncThunk } from '../../helpers/createAppAsyncThunk';
+import { handleThunkError } from '../../helpers/handle-thunk-error';
+import { createAppAsyncThunk } from '../../helpers/create-app-async-thunk';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface MovieState {

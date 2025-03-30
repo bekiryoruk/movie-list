@@ -4,8 +4,8 @@ import LoadingOverlay from './components/LoadingOverlay';
 import ErrorNotification from './components/ErrorNotification';
 import LoadingSpinner from './components/LoadingSpinner';
 
-const MovieList = lazy(() => import('./pages/MovieList'));
-const Movie = lazy(() => import('./pages/Movie'));
+const MovieList = lazy(() => import('./pages/movie-list/MovieList'));
+const Movie = lazy(() => import('./pages/movie/Movie'));
 
 function App() {
 	return (
