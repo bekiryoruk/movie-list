@@ -5,10 +5,13 @@ import { fetchMovieList } from '../../store/slices';
 import useDebounce from '../../hooks/use-debounce';
 import MovieSearchInputs from './components/MovieSearchInputs';
 import MovieTable from './components/MovieTable';
+import MovieTableSkeleton from './components/MovieTableSkeleton';
 
 const MovieList = () => {
 	const dispatch = useAppDispatch();
 	const { movies, totalResults } = useAppSelector((state) => state.movies);
+	const loading = useAppSelector((state) => state.common.loading);
+
 	const [query, setQuery] = useState('Pokemon');
 	const [page, setPage] = useState(1);
 	const [type, setType] = useState('');
@@ -66,12 +69,16 @@ const MovieList = () => {
 					setType={setType}
 				/>
 
-				<MovieTable
-					movies={movies}
-					totalPages={totalPages}
-					page={page}
-					handlePageChange={handlePageChange}
-				/>
+				{loading ? (
+					<MovieTableSkeleton />
+				) : (
+					<MovieTable
+						movies={movies}
+						totalPages={totalPages}
+						page={page}
+						handlePageChange={handlePageChange}
+					/>
+				)}
 			</Container>
 		</Box>
 	);

@@ -1,6 +1,5 @@
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import LoadingOverlay from './components/LoadingOverlay';
 import ErrorNotification from './components/ErrorNotification';
 import LoadingSpinner from './components/LoadingSpinner';
 
@@ -10,7 +9,6 @@ const Movie = lazy(() => import('./pages/movie/Movie'));
 function App() {
 	return (
 		<>
-			<LoadingOverlay />
 			<ErrorNotification />
 			<Suspense fallback={<LoadingSpinner />}>
 				<Routes>
