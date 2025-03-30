@@ -9,12 +9,14 @@ interface MovieState {
 	movies: Movie[];
 	totalResults: number;
 	movieDetails: MovieDetails | null;
+	searchQuery: string;
 }
 
 const initialState: MovieState = {
 	movies: [],
 	totalResults: 0,
 	movieDetails: null,
+	searchQuery: 'Pokemon',
 };
 
 export const fetchMovieList = createAppAsyncThunk(
@@ -59,11 +61,15 @@ const movieSlice = createSlice({
 		clearMovieDetails(state) {
 			state.movieDetails = null;
 		},
+		setSearchQuery(state, action: PayloadAction<string>) {
+			state.searchQuery = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(fetchMovieList.fulfilled, (state, action) => {
 			state.movies = action.payload.movies;
 			state.totalResults = action.payload.totalResults;
+			state.searchQuery = action.meta.arg.query;
 		});
 		builder.addCase(fetchMovieList.rejected, (state) => {
 			state.movies = [];
@@ -82,5 +88,5 @@ const movieSlice = createSlice({
 	},
 });
 
-export const { clearMovieDetails } = movieSlice.actions;
+export const { clearMovieDetails, setSearchQuery } = movieSlice.actions;
 export default movieSlice.reducer;

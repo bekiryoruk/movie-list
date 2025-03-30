@@ -11,7 +11,7 @@ import {
 	Pagination,
 } from '@mui/material';
 import { Movie } from '../../../types/movie';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface MovieTableProps {
 	movies: Movie[];
@@ -21,6 +21,8 @@ interface MovieTableProps {
 }
 
 const MovieTable: React.FC<MovieTableProps> = ({ movies, totalPages, page, handlePageChange }) => {
+	const navigate = useNavigate();
+
 	return (
 		<>
 			{movies.length > 0 && (
@@ -44,9 +46,8 @@ const MovieTable: React.FC<MovieTableProps> = ({ movies, totalPages, page, handl
 								{movies.map((movie: Movie) => (
 									<TableRow
 										key={movie.imdbID}
-										component={Link}
-										to={`/${movie.imdbID}`}
-										style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}
+										style={{ cursor: 'pointer' }}
+										onClick={() => navigate(`/${movie.imdbID}`)}
 									>
 										<TableCell>{movie.Title}</TableCell>
 										<TableCell>{movie.Year}</TableCell>

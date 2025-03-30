@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Container } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { fetchMovieList } from '../../store/slices';
+import { fetchMovieList, setSearchQuery } from '../../store/slices/movies';
 import useDebounce from '../../hooks/use-debounce';
 import MovieSearchInputs from './components/MovieSearchInputs';
 import MovieTable from './components/MovieTable';
@@ -9,16 +9,15 @@ import MovieTableSkeleton from './components/MovieTableSkeleton';
 
 const MovieList = () => {
 	const dispatch = useAppDispatch();
-	const { movies, totalResults } = useAppSelector((state) => state.movies);
+	const { movies, totalResults, searchQuery } = useAppSelector((state) => state.movies);
 	const loading = useAppSelector((state) => state.common.loading);
 
-	const [query, setQuery] = useState('Pokemon');
 	const [page, setPage] = useState(1);
 	const [type, setType] = useState('');
 	const [year, setYear] = useState('');
 	const totalPages = Math.ceil(totalResults / 10);
 
-	const debouncedQuery = useDebounce(query, 500);
+	const debouncedQuery = useDebounce(searchQuery, 500);
 	const debouncedType = useDebounce(type, 500);
 	const debouncedYear = useDebounce(year, 500);
 
@@ -41,6 +40,10 @@ const MovieList = () => {
 		setPage(value);
 	};
 
+	const handleQueryChange = (newQuery: string) => {
+		dispatch(setSearchQuery(newQuery));
+	};
+
 	return (
 		<Box
 			sx={{
@@ -61,8 +64,8 @@ const MovieList = () => {
 				</Typography>
 
 				<MovieSearchInputs
-					query={query}
-					setQuery={setQuery}
+					query={searchQuery}
+					setQuery={handleQueryChange}
 					year={year}
 					setYear={setYear}
 					type={type}
