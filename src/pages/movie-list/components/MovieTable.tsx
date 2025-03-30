@@ -9,7 +9,6 @@ import {
 	Paper,
 	Box,
 	Pagination,
-	Typography,
 } from '@mui/material';
 import { Movie } from '../../../types/movie';
 import { Link } from 'react-router-dom';
@@ -24,7 +23,7 @@ interface MovieTableProps {
 const MovieTable: React.FC<MovieTableProps> = ({ movies, totalPages, page, handlePageChange }) => {
 	return (
 		<>
-			{movies.length > 0 ? (
+			{movies.length > 0 && (
 				<>
 					<TableContainer component={Paper}>
 						<Table>
@@ -71,8 +70,6 @@ const MovieTable: React.FC<MovieTableProps> = ({ movies, totalPages, page, handl
 						</Box>
 					)}
 				</>
-			) : (
-				<Typography mt={3}>No results found.</Typography>
 			)}
 		</>
 	);

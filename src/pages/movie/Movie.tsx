@@ -34,7 +34,6 @@ const Movie = () => {
 			justifyContent='center'
 			alignItems='center'
 			minHeight='100vh'
-			sx={{ backgroundColor: '#F5F5F5' }}
 			boxSizing='border-box'
 		>
 			<Card

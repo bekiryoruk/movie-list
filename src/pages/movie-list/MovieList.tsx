@@ -42,7 +42,6 @@ const MovieList = () => {
 		<Box
 			sx={{
 				minHeight: '100vh',
-				backgroundColor: '#F5F5F5',
 				pt: 5,
 				pb: 5,
 				boxSizing: 'border-box',

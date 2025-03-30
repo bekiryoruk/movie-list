@@ -9,7 +9,7 @@ export const fetchMovies = async (
 ): Promise<{ movies: Movie[]; totalResults: number }> => {
 	const response = await api.get<MovieApiResponse>('', {
 		params: {
-			s: query || 'Pokemon',
+			s: query,
 			type: type,
 			y: year,
 			page: page,
